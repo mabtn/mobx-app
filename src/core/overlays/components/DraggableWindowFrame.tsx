@@ -77,6 +77,7 @@ export function DraggableWindowFrame({
         <button
           aria-label="Close window"
           className="rounded p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-700"
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={onClose}
         >
           &times;
