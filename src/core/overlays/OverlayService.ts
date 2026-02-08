@@ -115,6 +115,9 @@ export class OverlayService {
     bringToFront(instanceId: string): void {
         const inst = this.findById(instanceId);
         if (!inst || inst.kind !== "modeless") return;
+        // Skip if already the topmost modeless window
+        const maxZ = Math.max(...this.modelessWindows.map((w) => w.zIndex));
+        if (inst.zIndex === maxZ) return;
         inst.zIndex = this.allocateZ("modeless");
     }
 
