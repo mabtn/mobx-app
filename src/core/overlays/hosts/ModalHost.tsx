@@ -35,8 +35,7 @@ export const ModalHost = observer(function ModalHost() {
     return (
         <dialog
             ref={dialogRef}
-            className="fixed left-1/2 top-1/2 z-[510] -translate-x-1/2 -translate-y-1/2
-                 rounded-lg border border-gray-200 bg-white shadow-xl
+            className="m-auto rounded-lg border border-gray-200 bg-white shadow-xl
                  backdrop:bg-black/40 backdrop:backdrop-blur-sm
                  focus:outline-none"
             style={{ width: top.size.width }}

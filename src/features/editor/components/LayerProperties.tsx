@@ -157,7 +157,15 @@ export const LayerProperties = observer(function LayerProperties() {
                     Send Back
                 </Button>
                 <Button onClick={() => dispatch("editor:duplicateLayer", { id })}>Duplicate</Button>
-                <Button variant="danger" onClick={() => dispatch("editor:removeLayer", { id })}>
+                <Button
+                    variant="danger"
+                    onClick={() =>
+                        root.overlays.open("editor:delete-layer-confirm", {
+                            layerId: id,
+                            layerName: layer.name,
+                        })
+                    }
+                >
                     Delete
                 </Button>
             </div>

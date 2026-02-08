@@ -62,3 +62,11 @@ export const BLEND_MODES = [
     "color",
     "luminosity",
 ] as const;
+
+// ── Overlay params declaration merging ───────────────────────────────
+
+declare module "@app/types" {
+    interface OverlayParamsMap {
+        "editor:delete-layer-confirm": { layerId: string; layerName: string };
+    }
+}
