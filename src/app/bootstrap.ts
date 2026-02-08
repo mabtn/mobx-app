@@ -2,7 +2,7 @@ import { RootStore } from "@core/root/RootStore";
 import { registerSampleDocument } from "@features/sample/sampleDocument";
 import { registerSampleCommands } from "@features/sample/SampleCommands";
 import { registerSampleOverlays } from "@features/sample/SampleOverlays";
-import { registerEditorDocument, initEditorSampleLayer } from "@features/editor/editorDocument";
+import { registerEditorDocument, initEditorSampleLayers } from "@features/editor/editorDocument";
 import { registerEditorCommands } from "@features/editor/EditorCommands";
 
 /**
@@ -23,7 +23,7 @@ export function createRootStore(): RootStore {
     // ── Editor feature ────────────────────────────────────────────────
     registerEditorDocument(root.document);
     registerEditorCommands(root.commands);
-    initEditorSampleLayer(root.document);
+    initEditorSampleLayers(root.document);
 
     return root;
 }

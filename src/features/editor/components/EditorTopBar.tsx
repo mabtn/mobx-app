@@ -27,7 +27,7 @@ export const EditorTopBar = observer(function EditorTopBar() {
                 className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
                 onClick={() => root.commands.dispatch("editor:loadImage", undefined)}
             >
-                Load Image
+                Load Layer
             </button>
         </div>
     );

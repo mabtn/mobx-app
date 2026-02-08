@@ -1,7 +1,8 @@
 import type { DocumentStore } from "@core/state/DocumentStore";
 import type { EditorData, Layer, LayerShadow, LayerFilter } from "./types";
 import { imageCache } from "./ImageCache";
-import sampleUrl from "./assets/sample.png";
+import backgroundUrl from "./assets/sample.png";
+import aereoUrl from "./assets/aereo.webp";
 import { generateId } from "@core/utils/id";
 
 // ── Initial state ────────────────────────────────────────────────────
@@ -127,23 +128,17 @@ export function registerEditorDocument(doc: DocumentStore): void {
     );
 }
 
-// ── Sample layer initialiser ─────────────────────────────────────────
+// ── Sample image initialiser ─────────────────────────────────────────
 
-export async function initEditorSampleLayer(doc: DocumentStore): Promise<void> {
+export async function initEditorSampleLayers(doc: DocumentStore): Promise<void> {
     // Fetch the bundled sample image and convert to data URL
-    const resp = await fetch(sampleUrl);
-    const blob = await resp.blob();
-    const dataUrl = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(blob);
-    });
+    const backgroundDataUrl = await loadImageAsDataUrl(backgroundUrl);
+    const aereoDataUrl = await loadImageAsDataUrl(aereoUrl);
 
-    const ref = generateId("img");
-    await imageCache.load(ref, dataUrl);
-
-    const img = imageCache.get(ref)!;
-    const layer: Layer = {
+    const backgroundImageRef = generateId("img");
+    await imageCache.load(backgroundImageRef, backgroundDataUrl);
+    const backgroundImg = imageCache.get(backgroundImageRef)!;
+    const backgroundLayer: Layer = {
         id: generateId("layer"),
         name: "Background",
         visible: true,
@@ -152,15 +147,41 @@ export async function initEditorSampleLayer(doc: DocumentStore): Promise<void> {
         position: { x: 0, y: 0 },
         scale: { x: 1, y: 1 },
         effects: {},
-        imageRef: ref,
+        imageRef: backgroundImageRef,
         order: 0,
     };
 
+    const aereoImageRef = generateId("img");
+    await imageCache.load(aereoImageRef, aereoDataUrl);
+    const aereoLayer: Layer = {
+        id: generateId("layer"),
+        name: "Aereo",
+        visible: true,
+        opacity: 1,
+        blendMode: "source-over",
+        position: { x: 100, y: 100 },
+        scale: { x: 1, y: 1 },
+        effects: {},
+        imageRef: aereoImageRef,
+        order: 1,
+    };
+
     // Resize canvas to match image
-    doc.applyOps([{ type: "editor:layer:add", payload: { layer, dataUrl } }]);
+    doc.applyOps([{ type: "editor:layer:add", payload: { layer: backgroundLayer, dataUrl: backgroundDataUrl } }]);
+    doc.applyOps([{ type: "editor:layer:add", payload: { layer: aereoLayer, dataUrl: aereoDataUrl } }]);
 
     // Update canvas size to match image dimensions
     const d = ed(doc.data);
-    d.canvasWidth = img.naturalWidth;
-    d.canvasHeight = img.naturalHeight;
+    d.canvasWidth = backgroundImg.naturalWidth;
+    d.canvasHeight = backgroundImg.naturalHeight;
+}
+
+async function loadImageAsDataUrl(url: string): Promise<string> {
+    const resp = await fetch(url);
+    const blob = await resp.blob();
+    return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+    });
 }
