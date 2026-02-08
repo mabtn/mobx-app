@@ -13,17 +13,17 @@ import { registerEditorCommands } from "@features/editor/EditorCommands";
  * 2. Call it here with the relevant sub-stores.
  */
 export function createRootStore(): RootStore {
-  const root = new RootStore();
+    const root = new RootStore();
 
-  // ── Sample feature ────────────────────────────────────────────────
-  registerSampleDocument(root.document);
-  registerSampleCommands(root.commands);
-  registerSampleOverlays(root.overlayRegistry);
+    // ── Sample feature ────────────────────────────────────────────────
+    registerSampleDocument(root.document);
+    registerSampleCommands(root.commands);
+    registerSampleOverlays(root.overlayRegistry);
 
-  // ── Editor feature ────────────────────────────────────────────────
-  registerEditorDocument(root.document);
-  registerEditorCommands(root.commands);
-  initEditorSampleLayer(root.document);
+    // ── Editor feature ────────────────────────────────────────────────
+    registerEditorDocument(root.document);
+    registerEditorCommands(root.commands);
+    initEditorSampleLayer(root.document);
 
-  return root;
+    return root;
 }

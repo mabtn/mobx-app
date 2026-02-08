@@ -8,9 +8,9 @@ import "./styles/index.css";
 const root = createRootStore();
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <RootProvider store={root}>
-      <App />
-    </RootProvider>
-  </StrictMode>,
+    <StrictMode>
+        <RootProvider store={root}>
+            <App />
+        </RootProvider>
+    </StrictMode>,
 );

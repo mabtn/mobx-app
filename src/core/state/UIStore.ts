@@ -7,24 +7,24 @@ import { makeAutoObservable } from "mobx";
  * None of this is undoable or synced.
  */
 export class UIStore {
-  sidebarOpen = true;
-  theme: "light" | "dark" = "light";
-  /** Generic key-value bag for view-level flags. */
-  viewPrefs: Record<string, any> = {};
+    sidebarOpen = true;
+    theme: "light" | "dark" = "light";
+    /** Generic key-value bag for view-level flags. */
+    viewPrefs: Record<string, any> = {};
 
-  constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
-  }
+    constructor() {
+        makeAutoObservable(this, {}, { autoBind: true });
+    }
 
-  toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
+    toggleSidebar(): void {
+        this.sidebarOpen = !this.sidebarOpen;
+    }
 
-  setTheme(theme: "light" | "dark"): void {
-    this.theme = theme;
-  }
+    setTheme(theme: "light" | "dark"): void {
+        this.theme = theme;
+    }
 
-  setViewPref(key: string, value: any): void {
-    this.viewPrefs[key] = value;
-  }
+    setViewPref(key: string, value: any): void {
+        this.viewPrefs[key] = value;
+    }
 }

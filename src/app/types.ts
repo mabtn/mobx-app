@@ -7,12 +7,12 @@
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface OverlayParamsMap {
-  // Feature modules augment this via declaration merging:
-  //   declare module "@app/types" {
-  //     interface OverlayParamsMap {
-  //       "sample:settings": { tab?: string };
-  //     }
-  //   }
+    // Feature modules augment this via declaration merging:
+    //   declare module "@app/types" {
+    //     interface OverlayParamsMap {
+    //       "sample:settings": { tab?: string };
+    //     }
+    //   }
 }
 
 /** All registered overlay keys. */

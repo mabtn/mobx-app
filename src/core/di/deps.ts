@@ -17,12 +17,12 @@ import type { SyncEngine } from "@core/sync/SyncEngine";
 
 /** The full set of core services available via DI. */
 export interface Deps {
-  document: DocumentStore;
-  ui: UIStore;
-  commands: CommandStore;
-  scheduler: CommandScheduler;
-  history: HistoryStore;
-  overlays: OverlayService;
-  overlayRegistry: OverlayRegistry;
-  sync: SyncEngine;
+    document: DocumentStore;
+    ui: UIStore;
+    commands: CommandStore;
+    scheduler: CommandScheduler;
+    history: HistoryStore;
+    overlays: OverlayService;
+    overlayRegistry: OverlayRegistry;
+    sync: SyncEngine;
 }

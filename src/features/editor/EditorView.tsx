@@ -7,21 +7,21 @@ import { LayerList } from "./components/LayerList";
 import { LayerProperties } from "./components/LayerProperties";
 
 export const EditorView = observer(function EditorView() {
-  const root = useRootStore();
-  const data = root.document.data as unknown as EditorData;
+    const root = useRootStore();
+    const data = root.document.data as unknown as EditorData;
 
-  return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      <EditorTopBar />
-      <div className="flex flex-1 overflow-hidden">
-        {/* Canvas area */}
-        <EditorCanvas />
+    return (
+        <div className="flex flex-1 flex-col overflow-hidden">
+            <EditorTopBar />
+            <div className="flex flex-1 overflow-hidden">
+                {/* Canvas area */}
+                <EditorCanvas />
 
-        {/* Right panel */}
-        <aside className="w-64 shrink-0 overflow-y-auto border-l border-gray-200 bg-white p-3">
-          {data.selectedLayerId ? <LayerProperties /> : <LayerList />}
-        </aside>
-      </div>
-    </div>
-  );
+                {/* Right panel */}
+                <aside className="w-64 shrink-0 overflow-y-auto border-l border-gray-200 bg-white p-3">
+                    {data.selectedLayerId ? <LayerProperties /> : <LayerList />}
+                </aside>
+            </div>
+        </div>
+    );
 });

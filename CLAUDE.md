@@ -8,8 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` — TypeScript check (`tsc`) + Vite production build
 - `npm run preview` — Preview production build
 - `npx tsc --noEmit` — Type-check only (no emit)
+- `npm run format` — Format all source files with Prettier
+- `npm run format:check` — Check formatting without writing
 
-No test framework is configured. No linter or formatter is configured.
+No test framework is configured.
 
 ## Path Aliases
 

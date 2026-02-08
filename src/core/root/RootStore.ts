@@ -16,38 +16,38 @@ import type { Deps } from "@core/di/deps";
  * Created once in bootstrap and provided to React via context.
  */
 export class RootStore implements Deps {
-  document: DocumentStore;
-  ui: UIStore;
-  presence: PresenceStore;
-  collab: CollabStore;
-  commands: CommandStore;
-  scheduler: CommandScheduler;
-  history: HistoryStore;
-  overlayRegistry: OverlayRegistry;
-  overlays: OverlayService;
-  sync: SyncEngine;
+    document: DocumentStore;
+    ui: UIStore;
+    presence: PresenceStore;
+    collab: CollabStore;
+    commands: CommandStore;
+    scheduler: CommandScheduler;
+    history: HistoryStore;
+    overlayRegistry: OverlayRegistry;
+    overlays: OverlayService;
+    sync: SyncEngine;
 
-  constructor() {
-    // 1. Instantiate stores (no cross-refs yet)
-    this.document = new DocumentStore();
-    this.ui = new UIStore();
-    this.presence = new PresenceStore();
-    this.collab = new CollabStore();
-    this.scheduler = new CommandScheduler();
-    this.commands = new CommandStore(this.scheduler);
-    this.history = new HistoryStore();
-    this.overlayRegistry = new OverlayRegistry();
-    this.overlays = new OverlayService(this.overlayRegistry);
-    this.sync = new SyncEngine(
-      new LoopbackTransport(),
-      this.document,
-      this.presence,
-      this.collab,
-    );
+    constructor() {
+        // 1. Instantiate stores (no cross-refs yet)
+        this.document = new DocumentStore();
+        this.ui = new UIStore();
+        this.presence = new PresenceStore();
+        this.collab = new CollabStore();
+        this.scheduler = new CommandScheduler();
+        this.commands = new CommandStore(this.scheduler);
+        this.history = new HistoryStore();
+        this.overlayRegistry = new OverlayRegistry();
+        this.overlays = new OverlayService(this.overlayRegistry);
+        this.sync = new SyncEngine(
+            new LoopbackTransport(),
+            this.document,
+            this.presence,
+            this.collab,
+        );
 
-    // 2. Late-bind deps to break circular construction order
-    this.commands.init(this);
-    this.history.init(this.document);
-    this.overlays.init(this);
-  }
+        // 2. Late-bind deps to break circular construction order
+        this.commands.init(this);
+        this.history.init(this.document);
+        this.overlays.init(this);
+    }
 }
