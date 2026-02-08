@@ -5,7 +5,7 @@
 - **OverlayRegistry** — static map of overlay definitions (key → component + options).
 - **OverlayService** — runtime manager: open/close instances, z-order, focus.
 - **Hosts** — React components that render active overlay instances:
-    - `ModalHost` — top modal with backdrop + focus trap (Ariakit `modal`).
+    - `ModalHost` — top modal with backdrop + focus trap (native `<dialog>`).
     - `ModelessHost` — non-modal windows with drag support, z-order via click.
     - `PopoverHost` — lightweight global popovers (placeholder).
 
@@ -43,9 +43,10 @@ declare module "@app/types" {
 
 ## Modeless windows
 
-Modeless windows use Ariakit Dialog with `modal={false}`. They do **not** trap
-focus. Clicking a window calls `bringToFront(id)` to raise its z-index.
-Windows are draggable via `DraggableWindowFrame`.
+Modeless windows use a plain `div` with `role="dialog"` (via
+`DraggableWindowFrame`). They do **not** trap focus. Clicking a window calls
+`bringToFront(id)` to raise its z-index. Windows are draggable via
+`DraggableWindowFrame`.
 
 ## Sessions
 

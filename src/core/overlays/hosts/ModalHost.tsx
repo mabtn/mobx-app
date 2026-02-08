@@ -1,14 +1,27 @@
+import { useEffect, useCallback, useRef } from "react";
 import { observer } from "mobx-react-lite";
-import { Dialog, DialogHeading, DialogDismiss } from "@ariakit/react/dialog";
 import { useRootStore } from "@app/RootProvider";
 
 /**
- * Renders the topmost modal from the overlay service using Ariakit Dialog
- * with focus-trap and aria-modal behaviour.
+ * Renders the topmost modal from the overlay service using a native
+ * dialog element with focus-trap and aria-modal behaviour.
  */
 export const ModalHost = observer(function ModalHost() {
     const { overlays } = useRootStore();
     const top = overlays.modalStack.at(-1);
+    const dialogRef = useRef<HTMLDialogElement>(null);
+
+    // Keep the native <dialog> open state in sync
+    useEffect(() => {
+        const el = dialogRef.current;
+        if (!el) return;
+        if (top && !el.open) el.showModal();
+        if (!top && el.open) el.close();
+    }, [top]);
+
+    const handleClose = useCallback(() => {
+        if (top) overlays.close(top.id);
+    }, [top, overlays]);
 
     if (!top) return null;
 
@@ -20,27 +33,30 @@ export const ModalHost = observer(function ModalHost() {
     const dismissOnOutside = def.options?.dismissOnOutsideClick ?? true;
 
     return (
-        <Dialog
-            open
-            onClose={() => {
-                overlays.close(top.id);
-            }}
-            modal
-            backdrop={<div className="fixed inset-0 z-[500] bg-black/40 backdrop-blur-sm" />}
-            hideOnEscape={dismissOnEsc}
-            hideOnInteractOutside={dismissOnOutside}
+        <dialog
+            ref={dialogRef}
             className="fixed left-1/2 top-1/2 z-[510] -translate-x-1/2 -translate-y-1/2
                  rounded-lg border border-gray-200 bg-white shadow-xl
+                 backdrop:bg-black/40 backdrop:backdrop-blur-sm
                  focus:outline-none"
             style={{ width: top.size.width }}
+            onCancel={(e) => {
+                if (!dismissOnEsc) e.preventDefault();
+                else handleClose();
+            }}
+            onClick={(e) => {
+                if (dismissOnOutside && e.target === e.currentTarget) handleClose();
+            }}
         >
             <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2">
-                <DialogHeading className="text-sm font-semibold text-gray-700">
-                    {top.key}
-                </DialogHeading>
-                <DialogDismiss className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+                <h2 className="text-sm font-semibold text-gray-700">{top.key}</h2>
+                <button
+                    type="button"
+                    className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                    onClick={handleClose}
+                >
                     &times;
-                </DialogDismiss>
+                </button>
             </div>
             <div className="p-4">
                 <Component
@@ -50,6 +66,6 @@ export const ModalHost = observer(function ModalHost() {
                     close={() => overlays.close(top.id)}
                 />
             </div>
-        </Dialog>
+        </dialog>
     );
 });

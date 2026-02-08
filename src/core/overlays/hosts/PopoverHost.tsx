@@ -5,7 +5,7 @@ import { useRootStore } from "@app/RootProvider";
  * Placeholder host for popovers.
  *
  * Popovers are typically anchored to a trigger element, so they are often
- * rendered inline via hooks (usePopoverStore from Ariakit). This host exists
+ * rendered inline via hooks. This host exists
  * as a fallback for "global" popovers managed through OverlayService.
  */
 export const PopoverHost = observer(function PopoverHost() {
