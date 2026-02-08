@@ -286,6 +286,9 @@ const setShadowCmd: CommandDef<{ id: string; shadow: Layer["effects"]["shadow"] 
       inverseOps: [{ type: "editor:layer:setShadow", payload: { id, shadow: layer.effects.shadow } }],
     };
   },
+  mergeKey({ id }) {
+    return `editor:setShadow:${id}`;
+  },
 };
 
 // ── Set Blur ─────────────────────────────────────────────────────────
@@ -318,6 +321,9 @@ const applyFilterCmd: CommandDef<{ id: string; filters: Layer["effects"]["filter
       ops: [{ type: "editor:layer:setFilters", payload: { id, filters } }],
       inverseOps: [{ type: "editor:layer:setFilters", payload: { id, filters: layer.effects.filters } }],
     };
+  },
+  mergeKey({ id }) {
+    return `editor:applyFilter:${id}`;
   },
 };
 
