@@ -52,21 +52,15 @@ export function registerEditorDocument(doc: DocumentStore): void {
 
     // ── Property setters ─────────────────────────────────────────────
 
-    doc.registerHandler<{ id: string; visible: boolean }>(
-        EditorOp.SetVisible,
-        (payload, data) => {
-            const layer = ed(data).layers.find((l) => l.id === payload.id);
-            if (layer) layer.visible = payload.visible;
-        },
-    );
+    doc.registerHandler<{ id: string; visible: boolean }>(EditorOp.SetVisible, (payload, data) => {
+        const layer = ed(data).layers.find((l) => l.id === payload.id);
+        if (layer) layer.visible = payload.visible;
+    });
 
-    doc.registerHandler<{ id: string; opacity: number }>(
-        EditorOp.SetOpacity,
-        (payload, data) => {
-            const layer = ed(data).layers.find((l) => l.id === payload.id);
-            if (layer) layer.opacity = payload.opacity;
-        },
-    );
+    doc.registerHandler<{ id: string; opacity: number }>(EditorOp.SetOpacity, (payload, data) => {
+        const layer = ed(data).layers.find((l) => l.id === payload.id);
+        if (layer) layer.opacity = payload.opacity;
+    });
 
     doc.registerHandler<{ id: string; blendMode: string }>(
         EditorOp.SetBlendMode,

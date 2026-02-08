@@ -17,6 +17,11 @@ export class DocumentStore {
         makeAutoObservable(this, {}, { autoBind: true });
     }
 
+    /** All registered op types. */
+    get handlerTypes(): string[] {
+        return [...this.handlers.keys()];
+    }
+
     /**
      * Register a handler for a given op type.
      * The handler mutates `data` in place (inside a MobX action).

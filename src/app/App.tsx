@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useRootStore } from "./RootProvider";
 import { OverlayBoundary } from "@core/overlays/components/OverlayBoundary";
 import { EditorView } from "@features/editor/EditorView";
+import { DevToolsOverlay } from "@features/devtools/types";
 
 /**
  * App shell: header, main content area, overlay layers.
@@ -47,6 +48,13 @@ export const App = observer(function App() {
             {/* Header */}
             <header className="flex items-center bg-gray-900 px-4 py-2">
                 <h1 className="text-sm font-bold tracking-tight text-gray-100">MobX App Starter</h1>
+                <div className="flex-1" />
+                <button
+                    className="rounded px-2 py-1 text-xs text-gray-400 hover:bg-gray-700 hover:text-gray-200"
+                    onClick={() => root.overlays.open(DevToolsOverlay.Inspector, {})}
+                >
+                    DevTools
+                </button>
             </header>
 
             {/* Main content */}

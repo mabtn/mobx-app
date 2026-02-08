@@ -5,6 +5,7 @@ import { registerSampleOverlays } from "@features/sample/SampleOverlays";
 import { registerEditorDocument, initEditorSampleLayers } from "@features/editor/editorDocument";
 import { registerEditorCommands } from "@features/editor/EditorCommands";
 import { registerEditorOverlays } from "@features/editor/EditorOverlays";
+import { registerDevToolsOverlays } from "@features/devtools/DevToolsOverlays";
 
 /**
  * Create the root store and register all feature modules.
@@ -26,6 +27,9 @@ export function createRootStore(): RootStore {
     registerEditorCommands(root.commands);
     registerEditorOverlays(root.overlayRegistry);
     initEditorSampleLayers(root.document);
+
+    // ── DevTools ──────────────────────────────────────────────────────
+    registerDevToolsOverlays(root.overlayRegistry);
 
     return root;
 }

@@ -203,9 +203,7 @@ const toggleVisibilityCmd: CommandDef<{ id: string }> = {
         if (!layer) return { ops: [], inverseOps: [] };
         return {
             ops: [{ type: EditorOp.SetVisible, payload: { id, visible: !layer.visible } }],
-            inverseOps: [
-                { type: EditorOp.SetVisible, payload: { id, visible: layer.visible } },
-            ],
+            inverseOps: [{ type: EditorOp.SetVisible, payload: { id, visible: layer.visible } }],
         };
     },
 };
@@ -220,9 +218,7 @@ const setOpacityCmd: CommandDef<{ id: string; opacity: number }> = {
         if (!layer) return { ops: [], inverseOps: [] };
         return {
             ops: [{ type: EditorOp.SetOpacity, payload: { id, opacity } }],
-            inverseOps: [
-                { type: EditorOp.SetOpacity, payload: { id, opacity: layer.opacity } },
-            ],
+            inverseOps: [{ type: EditorOp.SetOpacity, payload: { id, opacity: layer.opacity } }],
         };
     },
     mergeKey({ id }) {
@@ -323,9 +319,7 @@ const setBlurCmd: CommandDef<{ id: string; blur: number | undefined }> = {
         if (!layer) return { ops: [], inverseOps: [] };
         return {
             ops: [{ type: EditorOp.SetBlur, payload: { id, blur } }],
-            inverseOps: [
-                { type: EditorOp.SetBlur, payload: { id, blur: layer.effects.blur } },
-            ],
+            inverseOps: [{ type: EditorOp.SetBlur, payload: { id, blur: layer.effects.blur } }],
         };
     },
     mergeKey({ id }) {

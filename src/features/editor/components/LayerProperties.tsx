@@ -156,7 +156,9 @@ export const LayerProperties = observer(function LayerProperties() {
                 >
                     Send Back
                 </Button>
-                <Button onClick={() => dispatch(EditorCmd.DuplicateLayer, { id })}>Duplicate</Button>
+                <Button onClick={() => dispatch(EditorCmd.DuplicateLayer, { id })}>
+                    Duplicate
+                </Button>
                 <Button
                     variant="danger"
                     onClick={() =>
