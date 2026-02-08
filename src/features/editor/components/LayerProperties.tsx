@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "@app/RootProvider";
 import type { EditorData, Layer } from "../types";
-import { BLEND_MODES } from "../types";
+import { BLEND_MODES, EditorCmd, EditorOverlay } from "../types";
 import { Button, Select, Slider } from "@core/ui";
 import { TransformControls } from "./TransformControls";
 import { ShadowControls } from "./ShadowControls";
@@ -21,7 +21,7 @@ export const LayerProperties = observer(function LayerProperties() {
     const dispatch = root.commands.dispatch.bind(root.commands);
 
     const handleBack = useCallback(() => {
-        dispatch("editor:selectLayer", { id: null });
+        dispatch(EditorCmd.SelectLayer, { id: null });
     }, [dispatch]);
 
     if (!layer) return null;
@@ -36,7 +36,7 @@ export const LayerProperties = observer(function LayerProperties() {
     const handleFinishRename = () => {
         setEditingName(false);
         if (nameValue.trim() && nameValue !== layer.name) {
-            dispatch("editor:renameLayer", { id, name: nameValue.trim() });
+            dispatch(EditorCmd.RenameLayer, { id, name: nameValue.trim() });
         }
     };
 
@@ -80,7 +80,7 @@ export const LayerProperties = observer(function LayerProperties() {
             <Slider
                 label="Opacity"
                 value={layer.opacity}
-                onChange={(opacity) => dispatch("editor:setOpacity", { id, opacity })}
+                onChange={(opacity) => dispatch(EditorCmd.SetOpacity, { id, opacity })}
             />
 
             {/* Blend Mode */}
@@ -88,7 +88,7 @@ export const LayerProperties = observer(function LayerProperties() {
                 label="Blend"
                 value={layer.blendMode}
                 options={BLEND_MODE_OPTIONS}
-                onChange={(blendMode) => dispatch("editor:setBlendMode", { id, blendMode })}
+                onChange={(blendMode) => dispatch(EditorCmd.SetBlendMode, { id, blendMode })}
             />
 
             <hr className="border-gray-200" />
@@ -97,8 +97,8 @@ export const LayerProperties = observer(function LayerProperties() {
             <TransformControls
                 position={layer.position}
                 scale={layer.scale}
-                onPositionChange={(x, y) => dispatch("editor:moveLayer", { id, x, y })}
-                onScaleChange={(x, y) => dispatch("editor:scaleLayer", { id, x, y })}
+                onPositionChange={(x, y) => dispatch(EditorCmd.MoveLayer, { id, x, y })}
+                onScaleChange={(x, y) => dispatch(EditorCmd.ScaleLayer, { id, x, y })}
             />
 
             <hr className="border-gray-200" />
@@ -106,7 +106,7 @@ export const LayerProperties = observer(function LayerProperties() {
             {/* Shadow */}
             <ShadowControls
                 shadow={layer.effects.shadow}
-                onChange={(shadow) => dispatch("editor:setShadow", { id, shadow })}
+                onChange={(shadow) => dispatch(EditorCmd.SetShadow, { id, shadow })}
             />
 
             {/* Blur */}
@@ -116,7 +116,7 @@ export const LayerProperties = observer(function LayerProperties() {
                 min={0}
                 max={20}
                 step={0.5}
-                onChange={(blur) => dispatch("editor:setBlur", { id, blur: blur || undefined })}
+                onChange={(blur) => dispatch(EditorCmd.SetBlur, { id, blur: blur || undefined })}
             />
 
             <hr className="border-gray-200" />
@@ -124,7 +124,7 @@ export const LayerProperties = observer(function LayerProperties() {
             {/* Filters */}
             <FilterControls
                 filters={layer.effects.filters}
-                onChange={(filters) => dispatch("editor:applyFilter", { id, filters })}
+                onChange={(filters) => dispatch(EditorCmd.ApplyFilter, { id, filters })}
             />
 
             <hr className="border-gray-200" />
@@ -135,7 +135,7 @@ export const LayerProperties = observer(function LayerProperties() {
                     onClick={() => {
                         const maxOrder = data.layers.reduce((m, l) => Math.max(m, l.order), -1);
                         if (layer.order < maxOrder) {
-                            dispatch("editor:reorderLayer", {
+                            dispatch(EditorCmd.ReorderLayer, {
                                 id,
                                 newOrder: layer.order + 1,
                             });
@@ -147,7 +147,7 @@ export const LayerProperties = observer(function LayerProperties() {
                 <Button
                     onClick={() => {
                         if (layer.order > 0) {
-                            dispatch("editor:reorderLayer", {
+                            dispatch(EditorCmd.ReorderLayer, {
                                 id,
                                 newOrder: layer.order - 1,
                             });
@@ -156,11 +156,11 @@ export const LayerProperties = observer(function LayerProperties() {
                 >
                     Send Back
                 </Button>
-                <Button onClick={() => dispatch("editor:duplicateLayer", { id })}>Duplicate</Button>
+                <Button onClick={() => dispatch(EditorCmd.DuplicateLayer, { id })}>Duplicate</Button>
                 <Button
                     variant="danger"
                     onClick={() =>
-                        root.overlays.open("editor:delete-layer-confirm", {
+                        root.overlays.open(EditorOverlay.DeleteLayerConfirm, {
                             layerId: id,
                             layerName: layer.name,
                         })

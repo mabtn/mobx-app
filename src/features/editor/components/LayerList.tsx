@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useRootStore } from "@app/RootProvider";
 import { imageCache } from "../ImageCache";
 import type { EditorData, Layer } from "../types";
+import { EditorCmd } from "../types";
 
 // ── Thumbnail ────────────────────────────────────────────────────────
 
@@ -47,7 +48,7 @@ export const LayerList = observer(function LayerList() {
 
     const handleSelect = useCallback(
         (id: string) => {
-            root.commands.dispatch("editor:selectLayer", { id });
+            root.commands.dispatch(EditorCmd.SelectLayer, { id });
         },
         [root],
     );
@@ -55,7 +56,7 @@ export const LayerList = observer(function LayerList() {
     const handleToggleVisibility = useCallback(
         (e: React.MouseEvent, id: string) => {
             e.stopPropagation();
-            root.commands.dispatch("editor:toggleVisibility", { id });
+            root.commands.dispatch(EditorCmd.ToggleVisibility, { id });
         },
         [root],
     );
@@ -89,7 +90,7 @@ export const LayerList = observer(function LayerList() {
             const target = data.layers.find((l) => l.id === targetId);
             if (!target) return;
 
-            root.commands.dispatch("editor:reorderLayer", {
+            root.commands.dispatch(EditorCmd.ReorderLayer, {
                 id: srcId,
                 newOrder: target.order,
             });

@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "@app/RootProvider";
 import { Button } from "@core/ui";
+import { EditorCmd } from "@features/editor/types";
 
 export const EditorTopBar = observer(function EditorTopBar() {
     const root = useRootStore();
@@ -27,7 +28,7 @@ export const EditorTopBar = observer(function EditorTopBar() {
             <Button
                 variant="primary"
                 className="px-3 py-1 text-sm"
-                onClick={() => root.commands.dispatch("editor:loadImage", undefined)}
+                onClick={() => root.commands.dispatch(EditorCmd.LoadImage, undefined)}
             >
                 Load Layer
             </Button>

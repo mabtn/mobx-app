@@ -2,6 +2,7 @@ import type { OverlayComponentProps } from "@core/overlays/OverlayTypes";
 import type { OverlayRegistry } from "@core/overlays/OverlayRegistry";
 import { useRootStore } from "@app/RootProvider";
 import { Button } from "@core/ui";
+import { EditorCmd, EditorOverlay } from "./types";
 
 // ── Modal: Delete layer confirmation ─────────────────────────────────
 
@@ -21,7 +22,7 @@ function DeleteLayerConfirm({
                 <Button
                     variant="danger"
                     onClick={() => {
-                        root.commands.dispatch("editor:removeLayer", { id: params.layerId });
+                        root.commands.dispatch(EditorCmd.RemoveLayer, { id: params.layerId });
                         close();
                     }}
                 >
@@ -36,7 +37,7 @@ function DeleteLayerConfirm({
 
 export function registerEditorOverlays(registry: OverlayRegistry): void {
     registry.register({
-        key: "editor:delete-layer-confirm",
+        key: EditorOverlay.DeleteLayerConfirm,
         kind: "modal",
         component: DeleteLayerConfirm,
         options: {

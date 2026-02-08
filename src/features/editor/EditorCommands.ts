@@ -3,6 +3,7 @@ import type { CommandStore } from "@core/commands/CommandStore";
 import { generateId } from "@core/utils/id";
 import { imageCache } from "./ImageCache";
 import type { EditorData, Layer } from "./types";
+import { EditorCmd, EditorOp } from "./types";
 
 function ed(deps: { document: { data: Record<string, any> } }): EditorData {
     return deps.document.data as unknown as EditorData;
@@ -18,7 +19,7 @@ function findLayer(
 // ── Load Image (async — opens file picker) ───────────────────────────
 
 const loadImageCmd: CommandDef = {
-    id: "editor:loadImage",
+    id: EditorCmd.LoadImage,
     title: "Load Image",
     locks: ["editor-load"],
     conflictPolicy: "reject",
@@ -73,18 +74,18 @@ const loadImageCmd: CommandDef = {
         d.canvasHeight = newHeight;
 
         deps.document.applyOps([
-            { type: "editor:layer:add", payload: { layer, dataUrl } },
-            { type: "editor:select", payload: { id: layer.id } },
+            { type: EditorOp.LayerAdd, payload: { layer, dataUrl } },
+            { type: EditorOp.Select, payload: { id: layer.id } },
         ]);
 
         return {
             ops: [
-                { type: "editor:layer:add", payload: { layer, dataUrl } },
-                { type: "editor:select", payload: { id: layer.id } },
+                { type: EditorOp.LayerAdd, payload: { layer, dataUrl } },
+                { type: EditorOp.Select, payload: { id: layer.id } },
             ],
             inverseOps: [
-                { type: "editor:select", payload: { id: d.selectedLayerId } },
-                { type: "editor:layer:remove", payload: { id: layer.id } },
+                { type: EditorOp.Select, payload: { id: d.selectedLayerId } },
+                { type: EditorOp.LayerRemove, payload: { id: layer.id } },
             ],
         };
     },
@@ -93,18 +94,18 @@ const loadImageCmd: CommandDef = {
 // ── Add Layer (sync, used internally) ────────────────────────────────
 
 const addLayerCmd: CommandDef<{ layer: Layer; dataUrl?: string }> = {
-    id: "editor:addLayer",
+    id: EditorCmd.AddLayer,
     title: "Add Layer",
     toOps({ layer, dataUrl }, deps) {
         const prevSelected = ed(deps).selectedLayerId;
         return {
             ops: [
-                { type: "editor:layer:add", payload: { layer, dataUrl } },
-                { type: "editor:select", payload: { id: layer.id } },
+                { type: EditorOp.LayerAdd, payload: { layer, dataUrl } },
+                { type: EditorOp.Select, payload: { id: layer.id } },
             ],
             inverseOps: [
-                { type: "editor:select", payload: { id: prevSelected } },
-                { type: "editor:layer:remove", payload: { id: layer.id } },
+                { type: EditorOp.Select, payload: { id: prevSelected } },
+                { type: EditorOp.LayerRemove, payload: { id: layer.id } },
             ],
         };
     },
@@ -113,7 +114,7 @@ const addLayerCmd: CommandDef<{ layer: Layer; dataUrl?: string }> = {
 // ── Remove Layer ─────────────────────────────────────────────────────
 
 const removeLayerCmd: CommandDef<{ id: string }> = {
-    id: "editor:removeLayer",
+    id: EditorCmd.RemoveLayer,
     title: "Remove Layer",
     toOps({ id }, deps) {
         const layer = findLayer(deps, id);
@@ -124,12 +125,12 @@ const removeLayerCmd: CommandDef<{ id: string }> = {
 
         return {
             ops: [
-                { type: "editor:select", payload: { id: null } },
-                { type: "editor:layer:remove", payload: { id } },
+                { type: EditorOp.Select, payload: { id: null } },
+                { type: EditorOp.LayerRemove, payload: { id } },
             ],
             inverseOps: [
-                { type: "editor:layer:add", payload: { layer: { ...layer }, dataUrl } },
-                { type: "editor:select", payload: { id: prevSelected } },
+                { type: EditorOp.LayerAdd, payload: { layer: { ...layer }, dataUrl } },
+                { type: EditorOp.Select, payload: { id: prevSelected } },
             ],
         };
     },
@@ -138,7 +139,7 @@ const removeLayerCmd: CommandDef<{ id: string }> = {
 // ── Duplicate Layer ──────────────────────────────────────────────────
 
 const duplicateLayerCmd: CommandDef<{ id: string }> = {
-    id: "editor:duplicateLayer",
+    id: EditorCmd.DuplicateLayer,
     title: "Duplicate Layer",
     toOps({ id }, deps) {
         const layer = findLayer(deps, id);
@@ -167,12 +168,12 @@ const duplicateLayerCmd: CommandDef<{ id: string }> = {
 
         return {
             ops: [
-                { type: "editor:layer:add", payload: { layer: newLayer, dataUrl } },
-                { type: "editor:select", payload: { id: newId } },
+                { type: EditorOp.LayerAdd, payload: { layer: newLayer, dataUrl } },
+                { type: EditorOp.Select, payload: { id: newId } },
             ],
             inverseOps: [
-                { type: "editor:select", payload: { id: prevSelected } },
-                { type: "editor:layer:remove", payload: { id: newId } },
+                { type: EditorOp.Select, payload: { id: prevSelected } },
+                { type: EditorOp.LayerRemove, payload: { id: newId } },
             ],
         };
     },
@@ -181,13 +182,13 @@ const duplicateLayerCmd: CommandDef<{ id: string }> = {
 // ── Select Layer ─────────────────────────────────────────────────────
 
 const selectLayerCmd: CommandDef<{ id: string | null }> = {
-    id: "editor:selectLayer",
+    id: EditorCmd.SelectLayer,
     title: "Select Layer",
     toOps({ id }, deps) {
         const prev = ed(deps).selectedLayerId;
         return {
-            ops: [{ type: "editor:select", payload: { id } }],
-            inverseOps: [{ type: "editor:select", payload: { id: prev } }],
+            ops: [{ type: EditorOp.Select, payload: { id } }],
+            inverseOps: [{ type: EditorOp.Select, payload: { id: prev } }],
         };
     },
 };
@@ -195,15 +196,15 @@ const selectLayerCmd: CommandDef<{ id: string | null }> = {
 // ── Toggle Visibility ────────────────────────────────────────────────
 
 const toggleVisibilityCmd: CommandDef<{ id: string }> = {
-    id: "editor:toggleVisibility",
+    id: EditorCmd.ToggleVisibility,
     title: "Toggle Layer Visibility",
     toOps({ id }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setVisible", payload: { id, visible: !layer.visible } }],
+            ops: [{ type: EditorOp.SetVisible, payload: { id, visible: !layer.visible } }],
             inverseOps: [
-                { type: "editor:layer:setVisible", payload: { id, visible: layer.visible } },
+                { type: EditorOp.SetVisible, payload: { id, visible: layer.visible } },
             ],
         };
     },
@@ -212,15 +213,15 @@ const toggleVisibilityCmd: CommandDef<{ id: string }> = {
 // ── Set Opacity ──────────────────────────────────────────────────────
 
 const setOpacityCmd: CommandDef<{ id: string; opacity: number }> = {
-    id: "editor:setOpacity",
+    id: EditorCmd.SetOpacity,
     title: "Set Opacity",
     toOps({ id, opacity }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setOpacity", payload: { id, opacity } }],
+            ops: [{ type: EditorOp.SetOpacity, payload: { id, opacity } }],
             inverseOps: [
-                { type: "editor:layer:setOpacity", payload: { id, opacity: layer.opacity } },
+                { type: EditorOp.SetOpacity, payload: { id, opacity: layer.opacity } },
             ],
         };
     },
@@ -232,15 +233,15 @@ const setOpacityCmd: CommandDef<{ id: string; opacity: number }> = {
 // ── Set Blend Mode ───────────────────────────────────────────────────
 
 const setBlendModeCmd: CommandDef<{ id: string; blendMode: string }> = {
-    id: "editor:setBlendMode",
+    id: EditorCmd.SetBlendMode,
     title: "Set Blend Mode",
     toOps({ id, blendMode }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setBlendMode", payload: { id, blendMode } }],
+            ops: [{ type: EditorOp.SetBlendMode, payload: { id, blendMode } }],
             inverseOps: [
-                { type: "editor:layer:setBlendMode", payload: { id, blendMode: layer.blendMode } },
+                { type: EditorOp.SetBlendMode, payload: { id, blendMode: layer.blendMode } },
             ],
         };
     },
@@ -249,16 +250,16 @@ const setBlendModeCmd: CommandDef<{ id: string; blendMode: string }> = {
 // ── Move Layer (position) ────────────────────────────────────────────
 
 const moveLayerCmd: CommandDef<{ id: string; x: number; y: number }> = {
-    id: "editor:moveLayer",
+    id: EditorCmd.MoveLayer,
     title: "Move Layer",
     toOps({ id, x, y }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setPosition", payload: { id, x, y } }],
+            ops: [{ type: EditorOp.SetPosition, payload: { id, x, y } }],
             inverseOps: [
                 {
-                    type: "editor:layer:setPosition",
+                    type: EditorOp.SetPosition,
                     payload: { id, x: layer.position.x, y: layer.position.y },
                 },
             ],
@@ -272,16 +273,16 @@ const moveLayerCmd: CommandDef<{ id: string; x: number; y: number }> = {
 // ── Scale Layer ──────────────────────────────────────────────────────
 
 const scaleLayerCmd: CommandDef<{ id: string; x: number; y: number }> = {
-    id: "editor:scaleLayer",
+    id: EditorCmd.ScaleLayer,
     title: "Scale Layer",
     toOps({ id, x, y }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setScale", payload: { id, x, y } }],
+            ops: [{ type: EditorOp.SetScale, payload: { id, x, y } }],
             inverseOps: [
                 {
-                    type: "editor:layer:setScale",
+                    type: EditorOp.SetScale,
                     payload: { id, x: layer.scale.x, y: layer.scale.y },
                 },
             ],
@@ -295,15 +296,15 @@ const scaleLayerCmd: CommandDef<{ id: string; x: number; y: number }> = {
 // ── Set Shadow ───────────────────────────────────────────────────────
 
 const setShadowCmd: CommandDef<{ id: string; shadow: Layer["effects"]["shadow"] }> = {
-    id: "editor:setShadow",
+    id: EditorCmd.SetShadow,
     title: "Set Shadow",
     toOps({ id, shadow }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setShadow", payload: { id, shadow } }],
+            ops: [{ type: EditorOp.SetShadow, payload: { id, shadow } }],
             inverseOps: [
-                { type: "editor:layer:setShadow", payload: { id, shadow: layer.effects.shadow } },
+                { type: EditorOp.SetShadow, payload: { id, shadow: layer.effects.shadow } },
             ],
         };
     },
@@ -315,15 +316,15 @@ const setShadowCmd: CommandDef<{ id: string; shadow: Layer["effects"]["shadow"] 
 // ── Set Blur ─────────────────────────────────────────────────────────
 
 const setBlurCmd: CommandDef<{ id: string; blur: number | undefined }> = {
-    id: "editor:setBlur",
+    id: EditorCmd.SetBlur,
     title: "Set Blur",
     toOps({ id, blur }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setBlur", payload: { id, blur } }],
+            ops: [{ type: EditorOp.SetBlur, payload: { id, blur } }],
             inverseOps: [
-                { type: "editor:layer:setBlur", payload: { id, blur: layer.effects.blur } },
+                { type: EditorOp.SetBlur, payload: { id, blur: layer.effects.blur } },
             ],
         };
     },
@@ -335,16 +336,16 @@ const setBlurCmd: CommandDef<{ id: string; blur: number | undefined }> = {
 // ── Apply Filter ─────────────────────────────────────────────────────
 
 const applyFilterCmd: CommandDef<{ id: string; filters: Layer["effects"]["filters"] }> = {
-    id: "editor:applyFilter",
+    id: EditorCmd.ApplyFilter,
     title: "Apply Filter",
     toOps({ id, filters }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setFilters", payload: { id, filters } }],
+            ops: [{ type: EditorOp.SetFilters, payload: { id, filters } }],
             inverseOps: [
                 {
-                    type: "editor:layer:setFilters",
+                    type: EditorOp.SetFilters,
                     payload: { id, filters: layer.effects.filters },
                 },
             ],
@@ -358,14 +359,14 @@ const applyFilterCmd: CommandDef<{ id: string; filters: Layer["effects"]["filter
 // ── Rename Layer ─────────────────────────────────────────────────────
 
 const renameLayerCmd: CommandDef<{ id: string; name: string }> = {
-    id: "editor:renameLayer",
+    id: EditorCmd.RenameLayer,
     title: "Rename Layer",
     toOps({ id, name }, deps) {
         const layer = findLayer(deps, id);
         if (!layer) return { ops: [], inverseOps: [] };
         return {
-            ops: [{ type: "editor:layer:setName", payload: { id, name } }],
-            inverseOps: [{ type: "editor:layer:setName", payload: { id, name: layer.name } }],
+            ops: [{ type: EditorOp.SetName, payload: { id, name } }],
+            inverseOps: [{ type: EditorOp.SetName, payload: { id, name: layer.name } }],
         };
     },
 };
@@ -373,7 +374,7 @@ const renameLayerCmd: CommandDef<{ id: string; name: string }> = {
 // ── Reorder Layer ────────────────────────────────────────────────────
 
 const reorderLayerCmd: CommandDef<{ id: string; newOrder: number }> = {
-    id: "editor:reorderLayer",
+    id: EditorCmd.ReorderLayer,
     title: "Reorder Layer",
     toOps({ id, newOrder }, deps) {
         const layers = ed(deps).layers;
@@ -398,16 +399,16 @@ const reorderLayerCmd: CommandDef<{ id: string; newOrder: number }> = {
                 if (l.order >= newOrder && l.order < oldOrder) shifted = l.order + 1;
             }
             if (shifted !== l.order) {
-                ops.push({ type: "editor:layer:setOrder", payload: { id: l.id, order: shifted } });
+                ops.push({ type: EditorOp.SetOrder, payload: { id: l.id, order: shifted } });
                 inverseOps.push({
-                    type: "editor:layer:setOrder",
+                    type: EditorOp.SetOrder,
                     payload: { id: l.id, order: l.order },
                 });
             }
         }
 
-        ops.push({ type: "editor:layer:setOrder", payload: { id, order: newOrder } });
-        inverseOps.push({ type: "editor:layer:setOrder", payload: { id, order: oldOrder } });
+        ops.push({ type: EditorOp.SetOrder, payload: { id, order: newOrder } });
+        inverseOps.push({ type: EditorOp.SetOrder, payload: { id, order: oldOrder } });
 
         return { ops, inverseOps };
     },

@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useRootStore } from "@app/RootProvider";
 import { imageCache } from "../ImageCache";
 import type { EditorData, Layer } from "../types";
+import { EditorCmd } from "../types";
 
 // ── Checkerboard pattern ─────────────────────────────────────────────
 
@@ -170,7 +171,7 @@ export const EditorCanvas = observer(function EditorCanvas() {
             const y = (e.clientY - rect.top) * scaleY;
 
             const hit = hitTest(x, y, data.layers);
-            root.commands.dispatch("editor:selectLayer", { id: hit?.id ?? null });
+            root.commands.dispatch(EditorCmd.SelectLayer, { id: hit?.id ?? null });
         },
         [root, data],
     );

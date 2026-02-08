@@ -1,5 +1,6 @@
 import type { DocumentStore } from "@core/state/DocumentStore";
 import type { EditorData, Layer, LayerShadow, LayerFilter } from "./types";
+import { EditorOp } from "./types";
 import { imageCache } from "./ImageCache";
 import backgroundUrl from "./assets/sample.png";
 import aereoUrl from "./assets/aereo.webp";
@@ -27,7 +28,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
 
     // ── Layer CRUD ───────────────────────────────────────────────────
 
-    doc.registerHandler<{ layer: Layer; dataUrl?: string }>("editor:layer:add", (payload, data) => {
+    doc.registerHandler<{ layer: Layer; dataUrl?: string }>(EditorOp.LayerAdd, (payload, data) => {
         ed(data).layers.push(payload.layer);
         // Populate image cache from payload (for undo reconstruction)
         if (payload.dataUrl) {
@@ -35,7 +36,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
         }
     });
 
-    doc.registerHandler<{ id: string }>("editor:layer:remove", (payload, data) => {
+    doc.registerHandler<{ id: string }>(EditorOp.LayerRemove, (payload, data) => {
         const d = ed(data);
         d.layers = d.layers.filter((l) => l.id !== payload.id);
         if (d.selectedLayerId === payload.id) {
@@ -45,14 +46,14 @@ export function registerEditorDocument(doc: DocumentStore): void {
 
     // ── Selection ────────────────────────────────────────────────────
 
-    doc.registerHandler<{ id: string | null }>("editor:select", (payload, data) => {
+    doc.registerHandler<{ id: string | null }>(EditorOp.Select, (payload, data) => {
         ed(data).selectedLayerId = payload.id;
     });
 
     // ── Property setters ─────────────────────────────────────────────
 
     doc.registerHandler<{ id: string; visible: boolean }>(
-        "editor:layer:setVisible",
+        EditorOp.SetVisible,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.visible = payload.visible;
@@ -60,7 +61,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
     );
 
     doc.registerHandler<{ id: string; opacity: number }>(
-        "editor:layer:setOpacity",
+        EditorOp.SetOpacity,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.opacity = payload.opacity;
@@ -68,7 +69,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
     );
 
     doc.registerHandler<{ id: string; blendMode: string }>(
-        "editor:layer:setBlendMode",
+        EditorOp.SetBlendMode,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.blendMode = payload.blendMode;
@@ -76,7 +77,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
     );
 
     doc.registerHandler<{ id: string; x: number; y: number }>(
-        "editor:layer:setPosition",
+        EditorOp.SetPosition,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.position = { x: payload.x, y: payload.y };
@@ -84,19 +85,19 @@ export function registerEditorDocument(doc: DocumentStore): void {
     );
 
     doc.registerHandler<{ id: string; x: number; y: number }>(
-        "editor:layer:setScale",
+        EditorOp.SetScale,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.scale = { x: payload.x, y: payload.y };
         },
     );
 
-    doc.registerHandler<{ id: string; name: string }>("editor:layer:setName", (payload, data) => {
+    doc.registerHandler<{ id: string; name: string }>(EditorOp.SetName, (payload, data) => {
         const layer = ed(data).layers.find((l) => l.id === payload.id);
         if (layer) layer.name = payload.name;
     });
 
-    doc.registerHandler<{ id: string; order: number }>("editor:layer:setOrder", (payload, data) => {
+    doc.registerHandler<{ id: string; order: number }>(EditorOp.SetOrder, (payload, data) => {
         const layer = ed(data).layers.find((l) => l.id === payload.id);
         if (layer) layer.order = payload.order;
     });
@@ -104,7 +105,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
     // ── Effects setters ──────────────────────────────────────────────
 
     doc.registerHandler<{ id: string; shadow: LayerShadow | undefined }>(
-        "editor:layer:setShadow",
+        EditorOp.SetShadow,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.effects.shadow = payload.shadow;
@@ -112,7 +113,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
     );
 
     doc.registerHandler<{ id: string; blur: number | undefined }>(
-        "editor:layer:setBlur",
+        EditorOp.SetBlur,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.effects.blur = payload.blur;
@@ -120,7 +121,7 @@ export function registerEditorDocument(doc: DocumentStore): void {
     );
 
     doc.registerHandler<{ id: string; filters: LayerFilter[] | undefined }>(
-        "editor:layer:setFilters",
+        EditorOp.SetFilters,
         (payload, data) => {
             const layer = ed(data).layers.find((l) => l.id === payload.id);
             if (layer) layer.effects.filters = payload.filters;
@@ -169,12 +170,12 @@ export async function initEditorSampleLayers(doc: DocumentStore): Promise<void> 
     // Resize canvas to match image
     doc.applyOps([
         {
-            type: "editor:layer:add",
+            type: EditorOp.LayerAdd,
             payload: { layer: backgroundLayer, dataUrl: backgroundDataUrl },
         },
     ]);
     doc.applyOps([
-        { type: "editor:layer:add", payload: { layer: aereoLayer, dataUrl: aereoDataUrl } },
+        { type: EditorOp.LayerAdd, payload: { layer: aereoLayer, dataUrl: aereoDataUrl } },
     ]);
 
     // Update canvas size to match image dimensions
