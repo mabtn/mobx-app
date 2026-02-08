@@ -184,12 +184,8 @@ const duplicateLayerCmd: CommandDef<{ id: string }> = {
 const selectLayerCmd: CommandDef<{ id: string | null }> = {
     id: EditorCmd.SelectLayer,
     title: "Select Layer",
-    toOps({ id }, deps) {
-        const prev = ed(deps).selectedLayerId;
-        return {
-            ops: [{ type: EditorOp.Select, payload: { id } }],
-            inverseOps: [{ type: EditorOp.Select, payload: { id: prev } }],
-        };
+    run({ id }, deps) {
+        deps.document.applyOps([{ type: EditorOp.Select, payload: { id } }]);
     },
 };
 
