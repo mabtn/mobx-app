@@ -16,13 +16,13 @@ Feature modules register their own data slices and handlers at bootstrap time â€
 ```ts
 // features/todos/todosDocument.ts
 export interface Todo {
-  id: string;
-  text: string;
-  done: boolean;
+    id: string;
+    text: string;
+    done: boolean;
 }
 
 export interface TodosData {
-  todos: Todo[];
+    todos: Todo[];
 }
 ```
 
@@ -34,22 +34,22 @@ inside a MobX action automatically.
 
 ```ts
 export function registerTodosDocument(doc: DocumentStore): void {
-  // Seed initial data
-  Object.assign(doc.data, { todos: [] } satisfies TodosData);
+    // Seed initial data
+    Object.assign(doc.data, { todos: [] } satisfies TodosData);
 
-  // Register op handlers
-  doc.registerHandler<Todo>("todos:add", (payload, data) => {
-    data.todos.push(payload);
-  });
+    // Register op handlers
+    doc.registerHandler<Todo>("todos:add", (payload, data) => {
+        data.todos.push(payload);
+    });
 
-  doc.registerHandler<{ id: string }>("todos:remove", (payload, data) => {
-    data.todos = data.todos.filter((t: Todo) => t.id !== payload.id);
-  });
+    doc.registerHandler<{ id: string }>("todos:remove", (payload, data) => {
+        data.todos = data.todos.filter((t: Todo) => t.id !== payload.id);
+    });
 
-  doc.registerHandler<{ id: string; done: boolean }>("todos:toggle", (payload, data) => {
-    const todo = data.todos.find((t: Todo) => t.id === payload.id);
-    if (todo) todo.done = payload.done;
-  });
+    doc.registerHandler<{ id: string; done: boolean }>("todos:toggle", (payload, data) => {
+        const todo = data.todos.find((t: Todo) => t.id === payload.id);
+        if (todo) todo.done = payload.done;
+    });
 }
 ```
 
@@ -60,10 +60,10 @@ export function registerTodosDocument(doc: DocumentStore): void {
 import { registerTodosDocument } from "@features/todos/todosDocument";
 
 export function createRootStore(): RootStore {
-  const root = new RootStore();
-  registerTodosDocument(root.document);
-  // ...
-  return root;
+    const root = new RootStore();
+    registerTodosDocument(root.document);
+    // ...
+    return root;
 }
 ```
 
@@ -74,7 +74,7 @@ serializable object `{ type, payload }` â€” see `core/sync/Op.ts`.
 
 ```ts
 doc.registerHandler<PayloadType>(opType, (payload, data) => {
-  // mutate data in place
+    // mutate data in place
 });
 ```
 
@@ -107,8 +107,8 @@ Each feature owns a disjoint slice of `data`. Use namespaced keys or a top-level
 property per feature to avoid collisions:
 
 ```ts
-Object.assign(doc.data, { todos: [] });   // todos feature
-Object.assign(doc.data, { canvas: {} });  // canvas feature
+Object.assign(doc.data, { todos: [] }); // todos feature
+Object.assign(doc.data, { canvas: {} }); // canvas feature
 ```
 
 Op types should also be namespaced (e.g. `"todos:add"`, `"canvas:addShape"`)

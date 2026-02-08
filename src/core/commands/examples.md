@@ -6,15 +6,15 @@
 import type { CommandDef } from "@core/commands/Command";
 
 const incrementCmd: CommandDef<{ amount: number }> = {
-  id: "counter:increment",
-  title: "Increment counter",
-  shortcut: "mod+up",
-  toOps({ amount }, deps) {
-    return {
-      ops: [{ type: "counter:set", payload: { delta: amount } }],
-      inverseOps: [{ type: "counter:set", payload: { delta: -amount } }],
-    };
-  },
+    id: "counter:increment",
+    title: "Increment counter",
+    shortcut: "mod+up",
+    toOps({ amount }, deps) {
+        return {
+            ops: [{ type: "counter:set", payload: { delta: amount } }],
+            inverseOps: [{ type: "counter:set", payload: { delta: -amount } }],
+        };
+    },
 };
 
 deps.commands.register(incrementCmd);
@@ -30,18 +30,18 @@ await deps.commands.dispatch("counter:increment", { amount: 1 });
 
 ```ts
 const importDataCmd: CommandDef<{ url: string }> = {
-  id: "data:import",
-  title: "Import data",
-  locks: ["document"],
-  conflictPolicy: "reject",
-  async run({ url }, deps, signal) {
-    const res = await fetch(url, { signal });
-    const data = await res.json();
-    // commit inside runInAction happens in applyOps
-    const ops = [{ type: "data:merge", payload: data }];
-    deps.document.applyOps(ops);
-    return { ops, inverseOps: [{ type: "data:clear", payload: {} }] };
-  },
+    id: "data:import",
+    title: "Import data",
+    locks: ["document"],
+    conflictPolicy: "reject",
+    async run({ url }, deps, signal) {
+        const res = await fetch(url, { signal });
+        const data = await res.json();
+        // commit inside runInAction happens in applyOps
+        const ops = [{ type: "data:merge", payload: data }];
+        deps.document.applyOps(ops);
+        return { ops, inverseOps: [{ type: "data:clear", payload: {} }] };
+    },
 };
 ```
 
@@ -52,10 +52,12 @@ single history entry:
 
 ```ts
 const sliderCmd: CommandDef<{ value: number }> = {
-  id: "slider:set",
-  title: "Set slider",
-  mergeKey: () => "slider",
-  toOps: ({ value }, deps) => ({ /* ... */ }),
+    id: "slider:set",
+    title: "Set slider",
+    mergeKey: () => "slider",
+    toOps: ({ value }, deps) => ({
+        /* ... */
+    }),
 };
 ```
 

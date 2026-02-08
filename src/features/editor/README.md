@@ -49,8 +49,8 @@ Click events on the canvas are converted to document coordinates (accounting for
 - **EditorTopBar**: Undo/Redo buttons + Load Image
 - **EditorCanvas**: Central canvas area with composited rendering
 - **Right Panel** (state machine):
-  - No selection → **LayerList**: layers sorted by order (highest at top), thumbnails, visibility toggles, drag-to-reorder
-  - Layer selected → **LayerProperties**: back button, editable name, opacity slider, blend mode dropdown, transform controls, shadow controls, blur slider, filter sliders, action buttons (bring forward, send back, duplicate, delete)
+    - No selection → **LayerList**: layers sorted by order (highest at top), thumbnails, visibility toggles, drag-to-reorder
+    - Layer selected → **LayerProperties**: back button, editable name, opacity slider, blend mode dropdown, transform controls, shadow controls, blur slider, filter sliders, action buttons (bring forward, send back, duplicate, delete)
 
 ## Adding New Tools/Effects
 

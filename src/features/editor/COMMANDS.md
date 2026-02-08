@@ -2,23 +2,23 @@
 
 ## Command Table
 
-| Command ID | Params | Sync/Async | mergeKey | Notes |
-|---|---|---|---|---|
-| `editor:loadImage` | — | async `run()` | — | Opens file picker, reads image, creates layer. `locks: ["editor-load"]` |
-| `editor:addLayer` | `{ layer, dataUrl? }` | sync `toOps()` | — | Adds a pre-built layer (internal use) |
-| `editor:removeLayer` | `{ id }` | sync | — | Captures `dataUrl` from cache for undo |
-| `editor:duplicateLayer` | `{ id }` | sync | — | Deep-clones layer, copies image in cache |
-| `editor:selectLayer` | `{ id: string \| null }` | sync | — | Sets `selectedLayerId` |
-| `editor:toggleVisibility` | `{ id }` | sync | — | Flips `visible` boolean |
-| `editor:setOpacity` | `{ id, opacity }` | sync | `editor:setOpacity:{id}` | Coalesces slider drags |
-| `editor:setBlendMode` | `{ id, blendMode }` | sync | — | Dropdown change |
-| `editor:moveLayer` | `{ id, x, y }` | sync | `editor:moveLayer:{id}` | Position change |
-| `editor:scaleLayer` | `{ id, x, y }` | sync | `editor:scaleLayer:{id}` | Scale change |
-| `editor:setShadow` | `{ id, shadow }` | sync | — | Shadow on/off + params |
-| `editor:setBlur` | `{ id, blur }` | sync | `editor:setBlur:{id}` | Blur radius slider |
-| `editor:applyFilter` | `{ id, filters }` | sync | — | Sets entire filters array |
-| `editor:renameLayer` | `{ id, name }` | sync | — | Text input |
-| `editor:reorderLayer` | `{ id, newOrder }` | sync | — | Shifts intermediate layers |
+| Command ID                | Params                   | Sync/Async     | mergeKey                 | Notes                                                                   |
+| ------------------------- | ------------------------ | -------------- | ------------------------ | ----------------------------------------------------------------------- |
+| `editor:loadImage`        | —                        | async `run()`  | —                        | Opens file picker, reads image, creates layer. `locks: ["editor-load"]` |
+| `editor:addLayer`         | `{ layer, dataUrl? }`    | sync `toOps()` | —                        | Adds a pre-built layer (internal use)                                   |
+| `editor:removeLayer`      | `{ id }`                 | sync           | —                        | Captures `dataUrl` from cache for undo                                  |
+| `editor:duplicateLayer`   | `{ id }`                 | sync           | —                        | Deep-clones layer, copies image in cache                                |
+| `editor:selectLayer`      | `{ id: string \| null }` | sync           | —                        | Sets `selectedLayerId`                                                  |
+| `editor:toggleVisibility` | `{ id }`                 | sync           | —                        | Flips `visible` boolean                                                 |
+| `editor:setOpacity`       | `{ id, opacity }`        | sync           | `editor:setOpacity:{id}` | Coalesces slider drags                                                  |
+| `editor:setBlendMode`     | `{ id, blendMode }`      | sync           | —                        | Dropdown change                                                         |
+| `editor:moveLayer`        | `{ id, x, y }`           | sync           | `editor:moveLayer:{id}`  | Position change                                                         |
+| `editor:scaleLayer`       | `{ id, x, y }`           | sync           | `editor:scaleLayer:{id}` | Scale change                                                            |
+| `editor:setShadow`        | `{ id, shadow }`         | sync           | —                        | Shadow on/off + params                                                  |
+| `editor:setBlur`          | `{ id, blur }`           | sync           | `editor:setBlur:{id}`    | Blur radius slider                                                      |
+| `editor:applyFilter`      | `{ id, filters }`        | sync           | —                        | Sets entire filters array                                               |
+| `editor:renameLayer`      | `{ id, name }`           | sync           | —                        | Text input                                                              |
+| `editor:reorderLayer`     | `{ id, newOrder }`       | sync           | —                        | Shifts intermediate layers                                              |
 
 ## Usage Examples
 

@@ -5,19 +5,19 @@
 - **OverlayRegistry** — static map of overlay definitions (key → component + options).
 - **OverlayService** — runtime manager: open/close instances, z-order, focus.
 - **Hosts** — React components that render active overlay instances:
-  - `ModalHost` — top modal with backdrop + focus trap (Ariakit `modal`).
-  - `ModelessHost` — non-modal windows with drag support, z-order via click.
-  - `PopoverHost` — lightweight global popovers (placeholder).
+    - `ModalHost` — top modal with backdrop + focus trap (Ariakit `modal`).
+    - `ModelessHost` — non-modal windows with drag support, z-order via click.
+    - `PopoverHost` — lightweight global popovers (placeholder).
 
 ## Registering an overlay
 
 ```ts
 // In your feature's bootstrap:
 overlayRegistry.register({
-  key: "myFeature:settings",
-  kind: "modal",
-  component: MySettingsPanel,
-  options: { dismissOnEsc: true, dismissOnOutsideClick: true },
+    key: "myFeature:settings",
+    kind: "modal",
+    component: MySettingsPanel,
+    options: { dismissOnEsc: true, dismissOnOutsideClick: true },
 });
 ```
 
@@ -35,9 +35,9 @@ overlays.closeAll("modeless");
 ```ts
 // myFeature/types.ts
 declare module "@app/types" {
-  interface OverlayParamsMap {
-    "myFeature:settings": { tab?: string };
-  }
+    interface OverlayParamsMap {
+        "myFeature:settings": { tab?: string };
+    }
 }
 ```
 

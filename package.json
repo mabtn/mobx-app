@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,md}\" \"*.md\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,md}\" \"*.md\""
   },
   "keywords": [],
   "author": "",
