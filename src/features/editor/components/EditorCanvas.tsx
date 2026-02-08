@@ -3,8 +3,10 @@ import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "@app/RootProvider";
 import { imageCache } from "../ImageCache";
+import { editorViewStore } from "../EditorViewStore";
 import type { EditorData, Layer } from "../types";
 import { EditorCmd } from "../types";
+import { ZoomBar } from "./ZoomBar";
 
 // ── Checkerboard pattern ─────────────────────────────────────────────
 
@@ -159,6 +161,8 @@ export const EditorCanvas = observer(function EditorCanvas() {
         };
     }, [data]);
 
+    const zoom = editorViewStore.zoom;
+
     // Click-to-select
     const handleClick = useCallback(
         (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -177,18 +181,27 @@ export const EditorCanvas = observer(function EditorCanvas() {
     );
 
     return (
-        <div
-            ref={containerRef}
-            className="flex flex-1 items-center justify-center overflow-auto bg-gray-100"
-        >
-            <canvas
-                ref={canvasRef}
-                width={data.canvasWidth}
-                height={data.canvasHeight}
-                onClick={handleClick}
-                className="max-h-full max-w-full shadow-md"
-                style={{ imageRendering: "auto" }}
-            />
+        <div className="flex flex-1 flex-col overflow-hidden">
+            <div
+                ref={containerRef}
+                className="flex flex-1 items-center justify-center overflow-auto bg-gray-100"
+            >
+                <canvas
+                    ref={canvasRef}
+                    width={data.canvasWidth}
+                    height={data.canvasHeight}
+                    onClick={handleClick}
+                    className="shadow-md"
+                    style={{
+                        imageRendering: "auto",
+                        width: data.canvasWidth * zoom,
+                        height: data.canvasHeight * zoom,
+                    }}
+                />
+            </div>
+            <div className="flex items-center justify-center border-t border-gray-200 bg-white px-2 py-1">
+                <ZoomBar />
+            </div>
         </div>
     );
 });
