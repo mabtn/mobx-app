@@ -57,9 +57,9 @@ export class HistoryStore {
             top.mergeKey === record.mergeKey &&
             now - top.timestamp < COALESCE_WINDOW
         ) {
-            // Accumulate ops for redo; prepend new inverseOps for undo (reverse order)
-            top.ops = [...top.ops, ...record.ops];
-            top.inverseOps = [...record.inverseOps, ...top.inverseOps];
+            // Replace ops with latest (only final value matters for redo);
+            // keep original inverseOps (only starting value matters for undo)
+            top.ops = record.ops;
             top.timestamp = now;
         } else {
             this.undoStack.push({ ...record, timestamp: now });
