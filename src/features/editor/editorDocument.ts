@@ -167,8 +167,15 @@ export async function initEditorSampleLayers(doc: DocumentStore): Promise<void> 
     };
 
     // Resize canvas to match image
-    doc.applyOps([{ type: "editor:layer:add", payload: { layer: backgroundLayer, dataUrl: backgroundDataUrl } }]);
-    doc.applyOps([{ type: "editor:layer:add", payload: { layer: aereoLayer, dataUrl: aereoDataUrl } }]);
+    doc.applyOps([
+        {
+            type: "editor:layer:add",
+            payload: { layer: backgroundLayer, dataUrl: backgroundDataUrl },
+        },
+    ]);
+    doc.applyOps([
+        { type: "editor:layer:add", payload: { layer: aereoLayer, dataUrl: aereoDataUrl } },
+    ]);
 
     // Update canvas size to match image dimensions
     const d = ed(doc.data);

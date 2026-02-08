@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import type { LayerFilter } from "../types";
+import { Slider } from "@core/ui";
 
 interface Props {
     filters: LayerFilter[] | undefined;
@@ -33,7 +34,6 @@ export function FilterControls({ filters, onChange }: Props) {
 
             let next: LayerFilter[];
             if (existing) {
-                // If resetting to default, remove the filter
                 if (value === def?.default) {
                     next = current.filter((f) => f.property !== property);
                 } else {
@@ -53,18 +53,16 @@ export function FilterControls({ filters, onChange }: Props) {
         <div className="space-y-2">
             <p className="text-xs font-medium text-gray-500">Filters</p>
             {FILTER_DEFS.map((def) => (
-                <label key={def.property} className="flex items-center gap-2 text-xs text-gray-700">
-                    <span className="w-16 shrink-0">{def.label}</span>
-                    <input
-                        type="range"
-                        min={def.min}
-                        max={def.max}
-                        value={getValue(def.property)}
-                        onChange={(e) => handleChange(def.property, parseFloat(e.target.value))}
-                        className="h-1 flex-1 accent-blue-500"
-                    />
-                    <span className="w-10 text-right tabular-nums">{getValue(def.property)}</span>
-                </label>
+                <Slider
+                    key={def.property}
+                    label={def.label}
+                    value={getValue(def.property)}
+                    min={def.min}
+                    max={def.max}
+                    step={1}
+                    onChange={(v) => handleChange(def.property, v)}
+                    formatValue={(v) => String(v)}
+                />
             ))}
         </div>
     );

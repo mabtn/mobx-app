@@ -2,11 +2,13 @@ import { useCallback, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "@app/RootProvider";
 import type { EditorData, Layer } from "../types";
-import { OpacitySlider } from "./OpacitySlider";
-import { BlendModeSelect } from "./BlendModeSelect";
+import { BLEND_MODES } from "../types";
+import { Button, Select, Slider } from "@core/ui";
 import { TransformControls } from "./TransformControls";
 import { ShadowControls } from "./ShadowControls";
 import { FilterControls } from "./FilterControls";
+
+const BLEND_MODE_OPTIONS = BLEND_MODES.map((mode) => ({ value: mode, label: mode }));
 
 export const LayerProperties = observer(function LayerProperties() {
     const root = useRootStore();
@@ -75,15 +77,17 @@ export const LayerProperties = observer(function LayerProperties() {
             <hr className="border-gray-200" />
 
             {/* Opacity */}
-            <OpacitySlider
+            <Slider
                 label="Opacity"
                 value={layer.opacity}
                 onChange={(opacity) => dispatch("editor:setOpacity", { id, opacity })}
             />
 
             {/* Blend Mode */}
-            <BlendModeSelect
+            <Select
+                label="Blend"
                 value={layer.blendMode}
+                options={BLEND_MODE_OPTIONS}
                 onChange={(blendMode) => dispatch("editor:setBlendMode", { id, blendMode })}
             />
 
@@ -106,7 +110,7 @@ export const LayerProperties = observer(function LayerProperties() {
             />
 
             {/* Blur */}
-            <OpacitySlider
+            <Slider
                 label="Blur"
                 value={layer.effects.blur ?? 0}
                 min={0}
@@ -127,8 +131,7 @@ export const LayerProperties = observer(function LayerProperties() {
 
             {/* Actions */}
             <div className="flex flex-wrap gap-1">
-                <button
-                    className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
+                <Button
                     onClick={() => {
                         const maxOrder = data.layers.reduce((m, l) => Math.max(m, l.order), -1);
                         if (layer.order < maxOrder) {
@@ -140,9 +143,8 @@ export const LayerProperties = observer(function LayerProperties() {
                     }}
                 >
                     Bring Forward
-                </button>
-                <button
-                    className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
+                </Button>
+                <Button
                     onClick={() => {
                         if (layer.order > 0) {
                             dispatch("editor:reorderLayer", {
@@ -153,19 +155,11 @@ export const LayerProperties = observer(function LayerProperties() {
                     }}
                 >
                     Send Back
-                </button>
-                <button
-                    className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
-                    onClick={() => dispatch("editor:duplicateLayer", { id })}
-                >
-                    Duplicate
-                </button>
-                <button
-                    className="rounded bg-red-100 px-2 py-1 text-xs text-red-700 hover:bg-red-200"
-                    onClick={() => dispatch("editor:removeLayer", { id })}
-                >
+                </Button>
+                <Button onClick={() => dispatch("editor:duplicateLayer", { id })}>Duplicate</Button>
+                <Button variant="danger" onClick={() => dispatch("editor:removeLayer", { id })}>
                     Delete
-                </button>
+                </Button>
             </div>
         </div>
     );
