@@ -1,3 +1,4 @@
+import { runInAction } from "mobx";
 import type { CommandDef } from "@core/commands/Command";
 import type { CommandStore } from "@core/commands/CommandStore";
 import { generateId } from "@core/utils/id";
@@ -68,10 +69,10 @@ const loadImageCmd: CommandDef = {
 
         // Resize canvas if the image is larger
         const d = ed(deps);
-        const newWidth = Math.max(d.canvasWidth, img.naturalWidth);
-        const newHeight = Math.max(d.canvasHeight, img.naturalHeight);
-        d.canvasWidth = newWidth;
-        d.canvasHeight = newHeight;
+        runInAction(() => {
+            d.canvasWidth = Math.max(d.canvasWidth, img.naturalWidth);
+            d.canvasHeight = Math.max(d.canvasHeight, img.naturalHeight);
+        });
 
         deps.document.applyOps([
             { type: EditorOp.LayerAdd, payload: { layer, dataUrl } },

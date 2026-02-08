@@ -1,3 +1,4 @@
+import { runInAction } from "mobx";
 import type { DocumentStore } from "@core/state/DocumentStore";
 import type { EditorData, Layer, LayerShadow, LayerFilter } from "./types";
 import { EditorOp } from "./types";
@@ -173,9 +174,11 @@ export async function initEditorSampleLayers(doc: DocumentStore): Promise<void> 
     ]);
 
     // Update canvas size to match image dimensions
-    const d = ed(doc.data);
-    d.canvasWidth = backgroundImg.naturalWidth;
-    d.canvasHeight = backgroundImg.naturalHeight;
+    runInAction(() => {
+        const d = ed(doc.data);
+        d.canvasWidth = backgroundImg.naturalWidth;
+        d.canvasHeight = backgroundImg.naturalHeight;
+    });
 }
 
 async function loadImageAsDataUrl(url: string): Promise<string> {
