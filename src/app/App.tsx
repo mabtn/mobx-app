@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { useRootStore } from "./RootProvider";
 import { OverlayBoundary } from "@core/overlays/components/OverlayBoundary";
-import { SampleView } from "@features/sample/SampleView";
+import { EditorView } from "@features/editor/EditorView";
 
 /**
  * App shell: header, sidebar placeholder, main content area, overlay layers.
@@ -71,8 +71,8 @@ export const App = observer(function App() {
         )}
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <SampleView />
+        <main className="flex-1 overflow-hidden">
+          <EditorView />
         </main>
       </div>
 
