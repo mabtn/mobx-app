@@ -4,8 +4,8 @@ import type { OverlayRegistry } from "./OverlayRegistry";
 import type { Deps } from "@core/di/deps";
 import { generateId } from "@core/utils/id";
 
-const BASE_Z_MODELESS = 100;
-const BASE_Z_MODAL = 500;
+const BASE_Z_MODAL = 100;
+const BASE_Z_MODELESS = 500;
 const BASE_Z_POPOVER = 800;
 
 /**
