@@ -1,5 +1,21 @@
 # MobX App
 
+## Project Goals
+
+This is a personal experiment with a few specific goals.
+
+**Architecture.** Build a generic web app architecture — not tied to any domain — with op-based state, undo/redo, data sync, and a full modal/modeless overlay system. The image editor is just a proving ground.
+
+**MobX everywhere.** Use MobX for every case where reactive state makes sense. Push it as far as it goes.
+
+**AI-authored codebase.** Let Claude write 99.99% of the code. Let Claude write (and read) comprehensive documentation. The human steers; the machine types.
+
+**Not yet done.** Stress-test MobX with large arrays of data. That is the next step.
+
+**Out of scope.** A test suite. Already explored in similar projects.
+
+---
+
 A layer-based image editor built on an **op-based state management** architecture with MobX. All mutations flow through serializable operations, giving you undo/redo, history coalescing, and real-time sync for free.
 
 ## Tech Stack
