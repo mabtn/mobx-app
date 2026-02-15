@@ -12,7 +12,7 @@ This is a personal experiment with a few specific goals.
 
 **Not yet done.** Stress-test MobX with large arrays of data. That is the next step.
 
-**Out of scope.** A test suite. Already explored in similar projects.
+**E2E tests.** Playwright E2E tests cover the most interactive flows — overlays, undo/redo, and layer property editing.
 
 ---
 
@@ -41,6 +41,8 @@ Open the URL printed by Vite (usually `http://localhost:5173`).
 | `npx tsc --noEmit`     | Type-check only                   |
 | `npm run format`       | Format source files with Prettier |
 | `npm run format:check` | Check formatting without writing  |
+| `npm run test:e2e`     | Run Playwright E2E tests          |
+| `npm run test:e2e:ui`  | Open Playwright UI mode           |
 
 ## Project Structure
 

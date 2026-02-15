@@ -10,8 +10,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npx tsc --noEmit` — Type-check only (no emit)
 - `npm run format` — Format all source files with Prettier
 - `npm run format:check` — Check formatting without writing
-
-No test framework is configured.
+- `npm run test:e2e` — Run Playwright E2E tests (headless)
+- `npm run test:e2e:ui` — Open Playwright UI mode for interactive debugging
 
 ## Path Aliases
 
@@ -69,6 +69,36 @@ Global handler in `App.tsx`. Cmd/Ctrl+Z and Cmd/Ctrl+Shift+Z are hardcoded for u
 ## Styling
 
 Tailwind CSS utility classes. No custom theme extensions. Standard patterns: `rounded bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300 disabled:opacity-40`.
+
+## E2E Testing (Playwright)
+
+Tests live in `e2e/` and run against Chromium only. The Playwright config (`playwright.config.ts`) auto-starts a Vite dev server on port 5175.
+
+### Running tests
+
+- `npm run test:e2e` — Run all tests headless.
+- `npm run test:e2e:ui` — Open the interactive UI runner.
+- `npx playwright test e2e/overlays.spec.ts` — Run a single spec file.
+- `npx playwright test -g "undo"` — Run tests matching a grep pattern.
+
+### Test structure
+
+| File | Covers |
+|---|---|
+| `e2e/helpers.ts` | Shared utilities: `gotoAndWaitForApp`, `MOD` key constant, `setRangeValue` |
+| `e2e/overlays.spec.ts` | Modal open/close (×, Escape, Cancel, backdrop), DevTools modeless window |
+| `e2e/undo-redo.spec.ts` | Undo/redo via keyboard shortcuts and toolbar buttons |
+| `e2e/layer-properties.spec.ts` | Layer list, property panel, opacity slider, blend mode, visibility toggle |
+
+### Writing new tests
+
+- **Wait for app ready.** Every test should call `gotoAndWaitForApp(page)` (usually in `beforeEach`) — it navigates to `/` and waits for the sample layers to render.
+- **Prefer accessible selectors.** Use `getByRole`, `getByLabel`, `getByTitle`, and `getByText` over CSS selectors. This keeps tests resilient to style changes and documents the app's accessibility surface.
+- **Scope ambiguous text.** If a text like "100%" appears in multiple places, scope the locator to a parent (e.g. `page.locator("aside").getByText("100%")`).
+- **Range inputs.** `fill()` does not work on `<input type="range">`. Use the `setRangeValue(page, label, value)` helper from `e2e/helpers.ts`.
+- **Platform modifier key.** Use the `MOD` constant (`Meta` on macOS, `Control` elsewhere) for keyboard shortcuts: `` await page.keyboard.press(`${MOD}+z`) ``.
+- **Testing non-events.** When asserting that something does *not* happen (e.g. backdrop click should not dismiss), add a short `waitForTimeout(300)` before the assertion.
+- **Separate tsconfig.** `e2e/tsconfig.json` is independent from the app's — no path aliases, no interference with `npm run build`.
 
 ## TypeScript
 

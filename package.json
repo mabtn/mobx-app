@@ -8,7 +8,9 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,md}\" \"*.md\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,md}\" \"*.md\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,md}\" \"*.md\"",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +23,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.3",
